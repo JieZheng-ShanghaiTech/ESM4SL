@@ -23,8 +23,8 @@ class SLembDataset(SLDataset):
     """
 
     @configurable
-    def __init__(self, stage: RunningStage, cfg: DictConfig) -> None:  #sl_root: Path, test_fold: int, cell_line: str | None, esm_root: Path
-        super().__init__(stage, cfg)
+    def __init__(self, cfg: DictConfig, stage: RunningStage) -> None:  #sl_root: Path, test_fold: int, cell_line: str | None, esm_root: Path
+        super().__init__(cfg, stage)
         self.esm_root = cfg.DATASET.ESM_ROOT
 
     def common_getitem(self, index: int, key: str) -> tuple[torch.Tensor, torch.Tensor, float, int, int] | tuple[torch.Tensor, torch.Tensor, float, int, int, np.ndarray]:
@@ -58,7 +58,7 @@ class CollateBatch():
     def __init__(self, cell_line: str | None):
         self.cell_line = cell_line
 
-    def padding(self, genes: list[torch.Tensor], max_len: int = 2000) -> tuple[torch.Tensor, torch.Tensor]:
+    def padding(self, genes: list[torch.Tensor], max_len: int = 1000) -> tuple[torch.Tensor, torch.Tensor]:
         count_len = [g.shape[0] for g in genes]
 
         batched_sample = torch.zeros((len(genes), max_len, genes[0].shape[1]))
